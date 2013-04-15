@@ -1,0 +1,43 @@
+AMT_SITE_URL = 'http://trailers.apple.com'
+AMT_SEARCH_URL = 'http://trailers.apple.com/trailers/home/scripts/quickfind.php?q=%s'
+AMT_XML_NS = {'a':'http://www.apple.com/itms/'}
+XML_HTTP_HEADERS = {'User-Agent': 'iTunes/10.7'}
+RE_XML_URL = Regex('^/moviesxml/s/([^/]+)/([^/]+)/(.+)\.xml$')
+CANONICAL_URL = 'http://trailers.apple.com/trailers/%s/%s/#%s'
+
+####################################################################################################
+def Search(query):
+
+	oc = ObjectContainer(title1='Apple Movie Trailers', title2='Search Results')
+	trailers = JSON.ObjectFromURL(AMT_SEARCH_URL % String.Quote(query))
+
+	if trailers['error'] == False:
+		for trailer in trailers['results']:
+			xml = None
+			url = '%s/%s/itsxml/%%s.xml' % (AMT_SITE_URL, trailer['location'].strip('/'))
+
+			for clip_type in ('trailer', 'teaser', 'clip', 'trailer1', 'featurette', 'internationaltrailer', 'firstlook'):
+				try:
+					xml = XML.ElementFromURL(url % clip_type, headers=XML_HTTP_HEADERS)
+					break
+				except:
+					pass
+
+			if not xml:
+				continue
+
+			# Get the URL and compute the canonical URL.
+			# Example: /moviesxml/s/disney/piratesofthecaribbeanonstrangertides/trailer2.xml
+			for xml_url in xml.xpath('//a:HBoxView/a:GotoURL/@url', namespaces=AMT_XML_NS):
+				(studio, title, video) = RE_XML_URL.findall(xml_url)[0]
+				canonical_url = CANONICAL_URL % (studio, title, video)
+				Log(" --> Canonical url: %s" % canonical_url)
+
+				# Add the video.
+				try:
+					video = URLService.MetadataObjectForURL(canonical_url)
+					oc.add(video)
+				except:
+					pass
+
+	return oc
