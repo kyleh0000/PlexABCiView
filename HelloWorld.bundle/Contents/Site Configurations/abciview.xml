@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<site  site="http://www.abc.net.au/iview/.*"
+       plugin="http://www.abc.net.au/iview/iview_.*swf"
+       initialState="starting"
+       version="1.0"
+       windowWidth="1280"
+       windowHeight="720"
+       >
+ 
+<!--
+
+Video info dialog appears at the center of the screen and is about 560x330 pixels.
+A greenish (#009887) play button appears on this dialog, but in slightly different
+places depending whether the video has been played before or not.  Offsets from
+the top left of the video info dialog are:
+
+(75, 112) if the video hasn't been played
+(97, 112) if it has
+
+e.g. Absolute x-position if video hasn't been played = (playerWidth - 560) / 2 + 75 
+
+-->
+ 
+ <state name="starting">
+  <event>
+   <condition>
+    <or>
+     <color x="435" y="307" color="009887" />
+     <color x="457" y="307" color="009887" />
+    </or>
+   </condition>
+   <action>
+    <click x="435" y="307" />  <!-- The whole region is clickable, so it doesn't matter exactly where this click is. -->
+    <goto state="playing" />
+   </action>
+  </event>
+ </state>
+
+ <state name="playing">
+  <event>
+   <condition>
+    <command name="pause" />
+   </condition>
+   <action>
+    <run script='$.onRemoteCall("PAUSE")' />
+    <goto state="paused" />
+   </action>
+  </event>
+  
+  <event>
+   <condition>
+    <command name="smallstep-" />
+   </condition>
+   <action>
+    <run script='$.onRemoteCall("LEFT")' />
+   </action>
+  </event>
+  
+  <event>
+   <condition>
+    <command name="smallstep+" />
+   </condition>
+   <action>
+    <run script='$.onRemoteCall("RIGHT")' />
+   </action>
+  </event>
+  
+  <event>
+   <condition>
+    <or>
+     <command name="bigstep-" />
+     <command name="bigstep+" />
+    </or>
+   </condition>
+   <action>
+    <click x="60" y="-80" />  <!-- Raise the info panel -->
+   </action>
+  </event>
+ </state>
+
+
+ <state name="paused">
+  <event>
+   <condition>
+    <command name="play" />
+   </condition>
+   <action>
+    <run script='$.onRemoteCall("PLAY")' />
+    <goto state="playing" />
+   </action>
+  </event>
+      
+  <event>
+   <condition>
+    <or>
+     <command name="smallstep-" />
+     <command name="bigstep-" />
+    </or>
+   </condition>
+   <action>
+    <run script='$.onRemoteCall("LEFT")' />
+   </action>
+  </event>
+  
+  <event>
+   <condition>
+    <or>
+     <command name="smallstep+" />
+     <command name="bigstep+" />
+    </or>
+   </condition>
+   <action>
+    <run script='$.onRemoteCall("RIGHT")' />
+   </action>
+  </event>
+ </state>
+ 
+</site>
