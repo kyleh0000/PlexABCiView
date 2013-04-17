@@ -13,8 +13,8 @@ class iView_Config():
 		
 	CFG_AUTH = XML.ElementFromURL(AUTH_URL)
 		
-	RTMP_Server = CFG_XML.xpath('/config/param[@name="server_streaming"]')[0].get("value")
-	CLIP_URL = 'mp4:flash/playback/_definst_/'
+	RTMP_Server = CFG_XML.xpath('/config/param[@name="server_streaming"]')[0].get("value") + '?auth='
+	SWF_URL = 'http://www.abc.net.au/iview/images/iview.jpg'
 		
 	CAT_XML = XML.ElementFromURL(CAT_URL)
 	SERIES_URL = API_URL + 'seriesIndex'
@@ -22,9 +22,18 @@ class iView_Config():
 	category_list = {}
 	
 	@classmethod
-	def Auth_Token(self):
-		return self.CFG_AUTH.xpath('//a:token/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0]
+	def RTMP_URL(self):
+		token = self.CFG_AUTH.xpath('//a:token/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0]
+		return self.CFG_AUTH.xpath('//a:server/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0] + '?auth=' + token
 	
+	@classmethod
+	def CLIP_PATH(self):
+		path = self.CFG_AUTH.xpath('//a:path/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})
+		if not path:
+			return 'mp4:'
+		
+		return 'mp4:' + path[0]
+		
 	@classmethod
 	def List_Categories(self):
 		 cats = {}
@@ -50,7 +59,6 @@ class iView_Series(object):
 		self.description = json[0]['c']
 		self.category = json[0]['e']
 		self.img = json[0]['d']
-		self.clip_base = iView_Config.CLIP_URL + json[0]['t'] + '/'
 		self.episode_count = len(json[0]['f'])
 		self.episodes = self.Episodes(json[0]['f'])
 		
@@ -60,14 +68,15 @@ class iView_Series(object):
 			id = ep['a']
 			title = ep['b']
 			description = ep['d']
-			url = self.clip_base + ep['n'][:-4]
+			url = ep['n'][:-4]
+			thumb = ep['s']
 			tmp = []
 			tmp.append(id)
 			tmp.append(title)
 			tmp.append(description)
 			tmp.append(url)
-
-		eps.append(tmp)
+			tmp.append(thumb)
+			eps.append(tmp)
 			
 		return eps
 

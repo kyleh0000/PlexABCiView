@@ -14,7 +14,8 @@ def MainMenu():
 	
 	oc = ObjectContainer(view_group='List', title2 = 'ABC iView')
 
-	#oc.add(VideoClipObject(key = RTMPVideoURL(url = 'rtmp://cp53909.edgefcs.net/ondemand?auth=daEcmcHbgdQakcJbmaxc4b0brbpaed0b2cV-brAifV-8-lmo_xHtnF&aifp=v001', clip = 'mp4:flash/playback/_definst_/kids/bobbuilder_13_12', swf_url = 'http://www.abc.net.au/iview/images/iview.jpg'), rating_key = '123',title = 'TEST'))
+
+	#oc.add(VideoClipObject(key = RTMPVideoURL(url = 'rtmp://203.18.195.10/ondemand' + '?auth=7B8F0402DD370FF9299E', clip = 'mp4:comedy/madashell_02_08', swf_url = 'http://www.abc.net.au/iview/images/iview.jpg'), rating_key = '123',title = 'TEST'))
 
 	cats = iView_Config.List_Categories()
 	
@@ -50,24 +51,21 @@ def GetEpisodesBySeries(series):
 	
 	show = iView_Series(series)
 	
-	oc = ObjectContainer(view_group='List', title2 = show.title)
+	oc = ObjectContainer(view_group='InfoList', title2 = show.title)
 	
 	episodes = show.episodes
 	
 	for item in episodes:
-
-		oc.add(DirectoryObject(
-				key = Callback(iView_Test),
-				title = item[1]
+		
+		oc.add(VideoClipObject(
+				key = RTMPVideoURL(url = iView_Config.RTMP_URL(), clip = iView_Config.CLIP_PATH() + item[3], swf_url = iView_Config.SWF_URL),
+				title = item[1],
+				summary = item[2],
+				thumb = item[4],
+				rating_key = item[3]
 				))
 	
 	return oc
 	
 
-@route('/video/abc/test/')
-def iView_Test():
-	
-	show = iView_Series(series)
-	
-	return show.episodes
 	
