@@ -57,15 +57,18 @@ def GetEpisodesBySeries(series):
 	
 	for item in episodes:
 		
-		oc.add(VideoClipObject(
-				key = RTMPVideoURL(url = iView_Config.RTMP_URL(), clip = iView_Config.CLIP_PATH() + item[3], swf_url = iView_Config.SWF_URL),
-				title = item[1],
-				summary = item[2],
-				thumb = item[4],
-				rating_key = item[3]
-				))
+		oc.add(Play_iView(item[1], item[2], item[3], item[4]))
 	
 	return oc
-	
 
+def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb):
+	
+	vco = VideoClipObject(
+				key = RTMPVideoURL(url = iView_Config.RTMP_URL(), clip = iView_Config.CLIP_PATH() + iView_Path, swf_url = iView_Config.SWF_URL),
+				title = iView_Title,
+				summary = iView_Summary,
+				thumb = iView_Thumb,
+				rating_key = iView_Path)
+	
+	return vco
 	

@@ -11,7 +11,7 @@ class iView_Config():
 	CAT_URL = BASE_URL + CFG_XML.xpath('/config/param[@name="categories"]')[0].get("value")
 	
 		
-	CFG_AUTH = XML.ElementFromURL(AUTH_URL)
+	
 		
 	RTMP_Server = CFG_XML.xpath('/config/param[@name="server_streaming"]')[0].get("value") + '?auth='
 	SWF_URL = 'http://www.abc.net.au/iview/images/iview.jpg'
@@ -23,12 +23,14 @@ class iView_Config():
 	
 	@classmethod
 	def RTMP_URL(self):
-		token = self.CFG_AUTH.xpath('//a:token/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0]
-		return self.CFG_AUTH.xpath('//a:server/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0] + '?auth=' + token
+		xml = XML.ElementFromURL(url=self.AUTH_URL, cacheTime=5)
+		token = xml.xpath('//a:token/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0]
+		return xml.xpath('//a:server/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0] + '?auth=' + token
 	
 	@classmethod
 	def CLIP_PATH(self):
-		path = self.CFG_AUTH.xpath('//a:path/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})
+		xml = XML.ElementFromURL(self.AUTH_URL)
+		path = xml.xpath('//a:path/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})
 		if not path:
 			return 'mp4:'
 		
