@@ -8,7 +8,7 @@ def Start():
 	Plugin.AddViewGroup('List', viewMode='List', mediaType='items')
 	Plugin.AddViewGroup('InfoList', viewMode='InfoList', mediaType='items')
 
-@handler('/video/abc', 'ABC iView', art=ART, thumb=ICON)
+@handler('/video/aubci', 'Australian ABC iView', art=ART, thumb=ICON)
 def MainMenu():
     
 	
@@ -28,7 +28,7 @@ def MainMenu():
 	
 	return oc
 
-@route('/video/abc/series/{category}')
+@route('/video/aubci/series/{category}')
 def GetSeriesByCaegory(category):
 	
 	cat = iView_Category(category)
@@ -46,7 +46,7 @@ def GetSeriesByCaegory(category):
 	
 	return oc
 	
-@route('/video/abc/episode/{series}')
+@route('/video/aubci/episode/{series}')
 def GetEpisodesBySeries(series):
 	
 	show = iView_Series(series)
