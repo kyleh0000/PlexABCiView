@@ -1,7 +1,7 @@
 from iview_class import *
 
-ART = 'art-default.png'
-ICON = 'icon-default.png'
+ART = 'art-default.jpg'
+ICON = 'icon-default.jpg'
 
 def Start():
 	
