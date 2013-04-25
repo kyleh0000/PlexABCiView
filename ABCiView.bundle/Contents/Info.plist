@@ -4,10 +4,6 @@
 <dict>
 	<key>CFBundleIdentifier</key>
 	<string>com.plexapp.plugins.aubciview</string>
-	<key>PlexAudioCodec</key>
-	<array>
-		<string>AAC</string>
-	</array>
 	<key>PlexClientPlatforms</key>
 	<string>*</string>
 	<key>PlexFrameworkVersion</key>
@@ -15,15 +11,6 @@
 	<key>PlexFrameworkFlags</key>
 	<array>
 		<string>UseRealRTMP</string>
-	</array>
-	<key>PlexMediaContainer</key>
-	<array>
-		<string>M4V</string>
-		<string>MOV</string>
-	</array>
-	<key>PlexVideoCodec</key>
-	<array>
-		<string>H.264</string>
 	</array>
 </dict>
 </plist>
