@@ -1,7 +1,7 @@
 from iview_class import *
 
-ART = 'art-default.png'
-ICON = 'icon-default.png'
+ART = 'art-default.jpg'
+ICON = 'icon-default.jpg'
 
 def Start():
 	
@@ -61,14 +61,26 @@ def GetEpisodesBySeries(series):
 	
 	return oc
 
-def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb):
-	
+def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, include_container=False):
+
 	vco = VideoClipObject(
-				key = RTMPVideoURL(url = iView_Config.RTMP_URL(), clip = iView_Config.CLIP_PATH() + iView_Path, swf_url = iView_Config.SWF_URL),
-				title = iView_Title,
-				summary = iView_Summary,
-				thumb = iView_Thumb,
-				rating_key = iView_Path)
-	
-	return vco
-	
+		key = Callback(Play_iView, iView_Title=iView_Title, iView_Summary=iView_Summary, iView_Path=iView_Path, iView_Thumb=iView_Thumb, include_container=True),
+		rating_key = iView_Path,
+		title = iView_Title,
+		summary = iView_Summary,
+		thumb = iView_Thumb,
+		items = [
+			MediaObject(
+				parts = [
+					PartObject(
+						key = RTMPVideoURL(url = iView_Config.RTMP_URL(), clip = iView_Config.CLIP_PATH() + iView_Path, swf_url = iView_Config.SWF_URL)
+					)
+				]
+			)
+		]
+	)
+
+	if include_container:
+		return ObjectContainer(objects=[vco])
+	else:
+		return vco
