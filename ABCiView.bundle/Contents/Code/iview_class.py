@@ -73,12 +73,14 @@ class iView_Series(object):
 			description = ep['d']
 			url = ep['n'][:-4]
 			thumb = ep['s']
+			duration = int(ep['j'])
 			tmp = []
 			tmp.append(id)
 			tmp.append(title)
 			tmp.append(description)
 			tmp.append(url)
 			tmp.append(thumb)
+			tmp.append(duration)
 			eps.append(tmp)
 			
 		return eps

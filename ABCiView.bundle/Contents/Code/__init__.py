@@ -57,18 +57,19 @@ def GetEpisodesBySeries(series):
 	
 	for item in episodes:
 		
-		oc.add(Play_iView(item[1], item[2], item[3], item[4]))
+		oc.add(Play_iView(item[1], item[2], item[3], item[4], item[5]))
 	
 	return oc
 
-def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, include_container=False):
+def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, iView_Duration, include_container=False):
 
 	vco = VideoClipObject(
-		key = Callback(Play_iView, iView_Title=iView_Title, iView_Summary=iView_Summary, iView_Path=iView_Path, iView_Thumb=iView_Thumb, include_container=True),
+		key = Callback(Play_iView, iView_Title=iView_Title, iView_Summary=iView_Summary, iView_Path=iView_Path, iView_Thumb=iView_Thumb, iView_Duration=iView_Duration, include_container=True),
 		rating_key = iView_Path,
 		title = iView_Title,
 		summary = iView_Summary,
 		thumb = iView_Thumb,
+		duration = iView_Duration,
 		items = [
 			MediaObject(
 				parts = [
