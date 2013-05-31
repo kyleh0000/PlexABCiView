@@ -10,9 +10,6 @@ class iView_Config():
 		
 	CAT_URL = BASE_URL + CFG_XML.xpath('/config/param[@name="categories"]')[0].get("value")
 	
-		
-	
-		
 	RTMP_Server = CFG_XML.xpath('/config/param[@name="server_streaming"]')[0].get("value") + '?auth='
 	SWF_URL = 'http://www.abc.net.au/iview/images/iview.jpg'
 		
@@ -23,8 +20,9 @@ class iView_Config():
 	
 	@classmethod
 	def RTMP_URL(self):
-
-		xml = XML.ElementFromURL(url=self.AUTH_URL, cacheTime=1)
+	
+		HTTP.ClearCache()
+		xml = XML.ElementFromURL(url=self.AUTH_URL)
 		token = xml.xpath('//a:token/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0]
 		return xml.xpath('//a:server/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0] + '?auth=' + token
 	
@@ -43,7 +41,7 @@ class iView_Config():
 		 for cat in self.CAT_XML.xpath('/categories/category'):
 		 	 id = cat.get('id')
 		 	 name = cat.find('name').text
-		 	 if id in ['test', 'recent', 'last-chance', 'index']:
+		 	 if id in ['test', 'index']:
 		 	 	continue
 		 	 cats[id] = name
 		 
