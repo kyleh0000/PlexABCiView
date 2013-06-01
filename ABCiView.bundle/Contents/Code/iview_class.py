@@ -21,7 +21,6 @@ class iView_Config():
 	@classmethod
 	def RTMP_URL(self):
 	
-		HTTP.ClearCache()
 		xml = XML.ElementFromURL(url=self.AUTH_URL)
 		token = xml.xpath('//a:token/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0]
 		return xml.xpath('//a:server/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0] + '?auth=' + token
