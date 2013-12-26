@@ -38,6 +38,7 @@ def GetSeriesByCaegory(category):
     series = cat.series_list
 
     for item in series:
+        Log(item)
         oc.add(DirectoryObject(
             key=Callback(GetEpisodesBySeries, series=item[0]),
             title=item[1]
@@ -50,7 +51,6 @@ def GetSeriesByCaegory(category):
 @route('/video/aubciview/series/{series}')
 def GetEpisodesBySeries(series):
     show = iView_Series(series)
-
     oc = ObjectContainer(view_group='InfoList', title2=show.title, no_cache=True)
 
     episodes = show.episodes
@@ -59,7 +59,7 @@ def GetEpisodesBySeries(series):
 
     for item in episodes:
         dur = item[5] * 1000
-        oc.add(Play_iView(item[1], item[2], item[3], item[4], dur, rtmp_url))
+        oc.add(Play_iView(item[1], item[2], item[3], item[4], dur, rtmp_url, item[6]))
 
     oc.objects.sort(key=lambda obj: obj.title)
 
@@ -67,8 +67,11 @@ def GetEpisodesBySeries(series):
 
 
 @route('/video/aubciview/episode/play')
-def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, iView_Duration, video_url, include_container=False):
+def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, iView_Duration, video_url, iView_live=0,
+               include_container=False):
     HTTP.ClearCache()
+
+    iView_live = int(iView_live)
 
     call_args = {
         "iView_Title": iView_Title,
@@ -77,8 +80,14 @@ def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, iView_Durati
         "iView_Thumb": iView_Thumb,
         "iView_Duration": int(iView_Duration),
         "video_url": video_url,
+        "iView_live": iView_live,
         "include_container": True,
     }
+
+    if iView_live == 1:
+        rtmpVid = RTMPVideoURL(url=video_url, clip=iView_Path, swf_url=iView_Config.SWF_URL, live=True)
+    else:
+        rtmpVid = RTMPVideoURL(url=video_url, clip=iView_Config.CLIP_PATH() + iView_Path, swf_url=iView_Config.SWF_URL)
 
     vco = VideoClipObject(
         key=Callback(Play_iView, **call_args),
@@ -91,8 +100,7 @@ def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, iView_Durati
             MediaObject(
                 parts=[
                     PartObject(
-                        key=RTMPVideoURL(url=video_url, clip=iView_Config.CLIP_PATH() + iView_Path,
-                                         swf_url=iView_Config.SWF_URL)
+                        key=rtmpVid
                     )
                 ]
             )

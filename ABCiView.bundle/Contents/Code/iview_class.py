@@ -66,9 +66,21 @@ class iView_Series(object):
             id = ep['a']
             title = ep['b']
             description = ep['d']
-            url = ep['n'][:-4]
+
+            live = 0
+            if 'n' in ep:
+                url = ep['n'][:-4]
+            else:
+                url = ep['r']
+                live = 1
+
             thumb = ep['s']
-            duration = int(ep['j'])
+
+            if 'j' in ep:
+                duration = int(ep['j'])
+            else:
+                duration = 0
+
             tmp = []
             tmp.append(id)
             tmp.append(title)
@@ -76,6 +88,7 @@ class iView_Series(object):
             tmp.append(url)
             tmp.append(thumb)
             tmp.append(duration)
+            tmp.append(live)
             eps.append(tmp)
 
         return eps
