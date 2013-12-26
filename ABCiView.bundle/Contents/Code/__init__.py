@@ -38,7 +38,6 @@ def GetSeriesByCaegory(category):
     series = cat.series_list
 
     for item in series:
-        Log(item)
         oc.add(DirectoryObject(
             key=Callback(GetEpisodesBySeries, series=item[0]),
             title=item[1]
