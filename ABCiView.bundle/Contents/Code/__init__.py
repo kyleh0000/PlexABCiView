@@ -58,7 +58,8 @@ def GetEpisodesBySeries(series):
     rtmp_url = iView_Config.RTMP_URL()
 
     for item in episodes:
-        oc.add(Play_iView(item[1], item[2], item[3], item[4], item[5], rtmp_url))
+        dur = item[5] * 1000
+        oc.add(Play_iView(item[1], item[2], item[3], item[4], dur, rtmp_url))
 
     oc.objects.sort(key=lambda obj: obj.title)
 
