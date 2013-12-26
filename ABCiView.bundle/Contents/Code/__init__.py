@@ -29,7 +29,7 @@ def MainMenu():
     return oc
 
 
-@route('/video/aubciview/series/{category}')
+@route('/video/aubciview/category/{category}')
 def GetSeriesByCaegory(category):
     cat = iView_Category(category)
 
@@ -47,7 +47,7 @@ def GetSeriesByCaegory(category):
     return oc
 
 
-@route('/video/aubciview/episode/{series}')
+@route('/video/aubciview/series/{series}')
 def GetEpisodesBySeries(series):
     show = iView_Series(series)
 
@@ -69,14 +69,23 @@ def GetEpisodesBySeries(series):
 def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, iView_Duration, video_url, include_container=False):
     HTTP.ClearCache()
 
+    call_args = {
+        "iView_Title": iView_Title,
+        "iView_Summary": iView_Summary,
+        "iView_Path": iView_Path,
+        "iView_Thumb": iView_Thumb,
+        "iView_Duration": int(iView_Duration),
+        "video_url": video_url,
+        "include_container": True,
+    }
+
     vco = VideoClipObject(
-        key=Callback(Play_iView, iView_Title=iView_Title, iView_Summary=iView_Summary, iView_Path=iView_Path,
-                     iView_Thumb=iView_Thumb, iView_Duration=iView_Duration, include_container=True),
+        key=Callback(Play_iView, **call_args),
         rating_key=iView_Path,
         title=iView_Title,
         summary=iView_Summary,
         thumb=iView_Thumb,
-        duration=iView_Duration,
+        duration=int(iView_Duration),
         items=[
             MediaObject(
                 parts=[
