@@ -83,6 +83,13 @@ def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, iView_Durati
         "include_container": True,
     }
 
+    Log('==== Video ====')
+    Log('Title: ' + iView_Title)
+    Log('RTMP Path: ' + video_url)
+    Log('Clip Path: ' + iView_Config.CLIP_PATH())
+    Log('Video Path: ' + iView_Path)
+    Log('==== End Video ====')
+
     if iView_live == 1:
         rtmpVid = RTMPVideoURL(url=video_url, clip=iView_Path, swf_url=iView_Config.SWF_URL, live=True)
     else:
