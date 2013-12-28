@@ -23,11 +23,13 @@ class iView_Config():
         xml = XML.ElementFromURL(url=self.AUTH_URL)
         token = xml.xpath('//a:token/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[
             0]
-        return xml.xpath('//a:server/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[
-                   0] + '?auth=' + token
+        return 'rtmp://cp53909.edgefcs.net/ondemand?auth=' + token
+        #return xml.xpath('//a:server/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[
+        #           0] + '?auth=' + token
 
     @classmethod
     def CLIP_PATH(self):
+        return 'mp4:flash/playback/_definst_/'
         xml = XML.ElementFromURL(self.AUTH_URL)
         path = xml.xpath('//a:path/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})
         if not path:
