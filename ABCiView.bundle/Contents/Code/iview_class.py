@@ -9,9 +9,6 @@ class iView_Config():
 
     CAT_URL = BASE_URL + CFG_XML.xpath('/config/param[@name="categories"]')[0].get("value")
 
-    RTMP_Server = CFG_XML.xpath('/config/param[@name="server_streaming"]')[0].get("value") + '?auth='
-    HD_Server = CFG_XML.xpath('/config/param[@name="server_streaming"]')[0].get("value") + 'hdcore=true&hdnea='
-
     SWF_URL = 'http://www.abc.net.au/iview/images/iview.jpg'
 
     CAT_XML = XML.ElementFromURL(CAT_URL)
@@ -19,22 +16,16 @@ class iView_Config():
     SERIES_JSON = JSON.ObjectFromURL(SERIES_URL)
     category_list = {}
 
+    FALLBACK_PATH = 'rtmp://cp53909.edgefcs.net/ondemand'
+
     @classmethod
     def RTMP_URL(self):
         xml = XML.ElementFromURL(url=self.AUTH_URL)
         token = xml.xpath('//a:token/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0]
-
-        hdToken = xml.xpath('//a:tokenhd/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0]
-
         server = xml.xpath('//a:server/text()', namespaces={'a': 'http://www.abc.net.au/iView/Services/iViewHandshaker'})[0]
 
-        # server = 'http://iviewum-vh.akamaihd.net/z/'
-
-        Log('Token: ' + token)
-        Log('HD token: ' + hdToken)
-
         if 'http' in server:
-            return server + 'hdcore=true&hdnea=' + hdToken
+            return self.FALLBACK_PATH + '?auth=' + token
         else:
             return server + '?auth=' + token
 
@@ -80,12 +71,10 @@ class iView_Series(object):
             title = ep['b']
             description = ep['d']
 
-            live = 0
             if 'n' in ep:
                 url = ep['n'][:-4]
             else:
                 url = ep['r']
-                live = 1
 
             thumb = ep['s']
 
@@ -101,7 +90,6 @@ class iView_Series(object):
             tmp.append(url)
             tmp.append(thumb)
             tmp.append(duration)
-            tmp.append(live)
             eps.append(tmp)
 
         return eps

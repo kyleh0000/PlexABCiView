@@ -58,7 +58,7 @@ def GetEpisodesBySeries(series):
 
     for item in episodes:
         dur = item[5] * 1000
-        oc.add(Play_iView(item[1], item[2], item[3], item[4], dur, rtmp_url, item[6]))
+        oc.add(Play_iView(item[1], item[2], item[3], item[4], dur, rtmp_url))
 
     oc.objects.sort(key=lambda obj: obj.title)
 
@@ -66,11 +66,9 @@ def GetEpisodesBySeries(series):
 
 
 @route('/video/aubciview/episode/play')
-def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, iView_Duration, video_url, iView_live=0,
-               include_container=False):
-    HTTP.ClearCache()
+def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, iView_Duration, video_url, include_container=False):
 
-    iView_live = int(iView_live)
+    HTTP.ClearCache()
 
     call_args = {
         "iView_Title": iView_Title,
@@ -79,21 +77,17 @@ def Play_iView(iView_Title, iView_Summary, iView_Path, iView_Thumb, iView_Durati
         "iView_Thumb": iView_Thumb,
         "iView_Duration": int(iView_Duration),
         "video_url": video_url,
-        "iView_live": iView_live,
         "include_container": True,
     }
 
-    Log('==== Video ====')
-    Log('Title: ' + iView_Title)
-    Log('RTMP Path: ' + video_url)
-    Log('Clip Path: ' + iView_Config.CLIP_PATH())
-    Log('Video Path: ' + iView_Path)
-    Log('==== End Video ====')
+    # Log('==== Video ====')
+    # Log('Title: ' + iView_Title)
+    # Log('RTMP Path: ' + video_url)
+    # Log('Clip Path: ' + iView_Config.CLIP_PATH())
+    # Log('Video Path: ' + iView_Path)
+    # Log('==== End Video ====')
 
-    if iView_live == 1:
-        rtmpVid = RTMPVideoURL(url=video_url, clip=iView_Path, swf_url=iView_Config.SWF_URL, live=True)
-    else:
-        rtmpVid = RTMPVideoURL(url=video_url, clip=iView_Config.CLIP_PATH() + iView_Path, swf_url=iView_Config.SWF_URL)
+    rtmpVid = RTMPVideoURL(url=video_url, clip=iView_Config.CLIP_PATH() + iView_Path, swf_url=iView_Config.SWF_URL)
 
     vco = VideoClipObject(
         key=Callback(Play_iView, **call_args),
